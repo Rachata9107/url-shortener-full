@@ -1,7 +1,7 @@
 .App {
   text-align: center;
   min-height: 100%;
-  background-image: url('../asset/wallpaper.jpg');
+  background-image: url('../assets/wallpaper.jpg');
   background-position: center;
 }
 
@@ -83,10 +83,11 @@
 }
 
 .main-list-item h6{
+  text-align: center;
   margin: 0;
   padding: 0.5rem;
   border-radius: 1rem;
-  border: 0.2rem solid rgb(93, 3, 121);
+  border: 0.2rem solid rgb(3, 40, 121);
   background-color: azure;
   height: max-content;
   width: 100%;
@@ -95,7 +96,7 @@
 
 .main-list-item a{
   border-radius: 1rem;
-  /* border: 0.2rem solid rgb(99, 17, 124); */
+  border: 0.2rem solid black;
   background-color: rgb(241, 236, 156);
   color: black;
   overflow: hidden;

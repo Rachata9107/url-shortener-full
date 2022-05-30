@@ -43,15 +43,15 @@ function Admin() {
         axios.delete(url_edit).then(({ data }) =>
           data.state
             ? swal("Deleted!", {
-              icon: "success",
-              buttons: false,
-              timer: 1000,
-            }).then(() => fetchUsers())
+                icon: "success",
+                buttons: false,
+                timer: 1000,
+              }).then(() => fetchUsers())
             : swal("Something went wrong!", {
-              icon: "error",
-              buttons: false,
-              timer: 1000,
-            })
+                icon: "error",
+                buttons: false,
+                timer: 1000,
+              })
         );
       }
     });
@@ -69,7 +69,7 @@ function Admin() {
 
   useEffect(() => {
     setTimeout(() => fetchUsers(), 500);
-    onChkSession()
+    onChkSession();
   }, []);
 
   return (
@@ -94,19 +94,10 @@ function Admin() {
               <td>{e.level}</td>
               <td>{e.datetime.slice(0, 10)}</td>
               <td className="admin-manage-btn">
-                <Button
-                  onClick={() => onHandleMore(e.user)}
-                  size="sm"
-                  variant="info"
-                >
+                <Button onClick={() => onHandleMore(e.user)} size="sm" variant="info" disabled={e.level === "admin"}>
                   More
                 </Button>
-                <Button
-                  onClick={() => onHandleDelete(e.id)}
-                  size="sm"
-                  variant="danger"
-                  disabled={e.level === "admin"}
-                >
+                <Button onClick={() => onHandleDelete(e.id)} size="sm" variant="danger" disabled={e.level === "admin"}>
                   Delete
                 </Button>
               </td>
@@ -114,12 +105,7 @@ function Admin() {
           ))}
         </tbody>
       </Table>
-      <Listmodal
-        show={modalShow}
-        onHide={() => setModalShow(false)}
-        urllist={urlList}
-        user={infoModal}
-      />
+      <Listmodal show={modalShow} onHide={() => setModalShow(false)} urllist={urlList} user={infoModal} />
     </div>
   );
 }

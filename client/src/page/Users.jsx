@@ -7,7 +7,7 @@ import { Button } from "react-bootstrap";
 
 function Users() {
   const [urlList, setUrlList] = useState([]);
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState("");
   const [show, setShow] = useState(false);
   // const url_list = `/api/info/url-shorte?user=${user}`;
   const url_chk_session = "/api/users/chk-session";
@@ -17,8 +17,8 @@ function Users() {
       if (data.level !== "user" && !data.state) {
         window.location = "/";
       }
-      setUser(data.user)
-      resolve(data.user)
+      setUser(data.user);
+      resolve(data.user);
     });
   });
 
@@ -29,21 +29,18 @@ function Users() {
         .get(url_list)
         .then(({ data }) => setUrlList(data.results))
         .catch((err) => console.log(err));
-    })
+    });
   };
 
   useEffect(() => {
     setTimeout(() => fetchList(), 100);
   }, []);
 
+  const buttonStyle = { width: "100%", border: "0.2rem solid black", backgroundColor: "orange", color: "black" };
+
   return (
     <div className="main-users">
-      <Button
-        onClick={() => setShow(true)}
-        style={{ width: "100%" }}
-        size="lg"
-        variant="light"
-      >
+      <Button onClick={() => setShow(true)} style={buttonStyle} size="lg">
         Create Short URL
       </Button>
       <Urllist urllist={urlList} newfetch={fetchList} />
