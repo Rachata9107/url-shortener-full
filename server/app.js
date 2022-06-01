@@ -53,22 +53,14 @@ app.get("/:urlParams", async (req, res) => {
   } else {
     const [rows] = await db.execute(sql, [urlParams]);
     if (rows.length > 0) {
-      client.set(urlParams, rows[0].urlLong, { EX: 60, NX: true });
-      res.redirect(rows.urlLong);
+      const myUrl = rows[0].urlLong;
+      client.set(urlParams, myUrl, { EX: 60, NX: true });
+      res.redirect(myUrl);
     } else {
       client.set(urlParams, idxUrl, { EX: 60, NX: true });
       res.redirect(idxUrl);
     }
   }
-  // db.execute(sql, [urlParams])
-  // .then(([rows]) => {
-  //   if (rows.length > 0) {
-  //     res.redirect(rows[0].urlLong);
-  //   }
-  // })
-  // .catch((err) => {
-  //   console.error(err);
-  // });
 });
 
 app.listen(PORT, () => {
