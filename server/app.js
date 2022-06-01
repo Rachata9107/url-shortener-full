@@ -1,4 +1,5 @@
 const createError = require("http-errors");
+const redis = require("redis");
 const express = require("express");
 const sessions = require("express-session");
 const path = require("path");
@@ -6,7 +7,13 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
 const db = require("./routes/libs/dbconfig");
-const PORT = process.env.PORT || 3012
+const PORT = process.env.PORT || 3012;
+
+const redisPort = 6379;
+const client = redis.createClient(redisPort);
+(async () => {
+  await client.connect();
+})();
 
 // const indexRouter = require("./routes/index");
 const usersApiRouter = require("./routes/api/users");
@@ -39,18 +46,33 @@ app.get("/shortener/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
-app.get("/:urlParams", (req, res) => {
+app.get("/:urlParams", async (req, res) => {
   const urlParams = req.params.urlParams ?? "";
+  const idxUrl = "https://url.rct-dev.com/";
   const sql = `SELECT urlLong FROM t_url_shorte WHERE urlParams=? ;`;
-  db.execute(sql, [urlParams])
-    .then(([rows]) => {
-      if (rows.length > 0) {
-        res.redirect(rows[0].urlLong);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  const urlLong = await client.get(urlParams);
+  if (urlLong) {
+    res.redirect(urlLong);
+  } else {
+    const [rows] = await db.execute(sql, [urlParams]);
+    console.log(rows);
+    if (rows.length > 0) {
+      client.set(urlParams, rows[0].urlLong, { EX: 60, NX: true });
+      res.redirect(rows.urlLong);
+    } else {
+      client.set(urlParams, idxUrl, { EX: 60, NX: true });
+      res.redirect(idxUrl);
+    }
+  }
+  // db.execute(sql, [urlParams])
+  // .then(([rows]) => {
+  //   if (rows.length > 0) {
+  //     res.redirect(rows[0].urlLong);
+  //   }
+  // })
+  // .catch((err) => {
+  //   console.error(err);
+  // });
 });
 
 // // catch 404 and forward to error handler
@@ -71,6 +93,6 @@ app.get("/:urlParams", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running. port ${PORT}`);
-})
+});
 
 module.exports = app;
