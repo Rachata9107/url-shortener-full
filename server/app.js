@@ -1,4 +1,3 @@
-const createError = require("http-errors");
 const redis = require("redis");
 const express = require("express");
 const sessions = require("express-session");
@@ -15,7 +14,6 @@ const client = redis.createClient(redisPort);
   await client.connect();
 })();
 
-// const indexRouter = require("./routes/index");
 const usersApiRouter = require("./routes/api/users");
 const infoApiRouter = require("./routes/api/info");
 
@@ -37,7 +35,6 @@ app.use(
 
 app.use(cors());
 
-// app.use("/", indexRouter);
 app.use("/api/users", usersApiRouter);
 app.use("/api/info", infoApiRouter);
 
@@ -55,7 +52,6 @@ app.get("/:urlParams", async (req, res) => {
     res.redirect(urlLong);
   } else {
     const [rows] = await db.execute(sql, [urlParams]);
-    console.log(rows);
     if (rows.length > 0) {
       client.set(urlParams, rows[0].urlLong, { EX: 60, NX: true });
       res.redirect(rows.urlLong);
@@ -74,22 +70,6 @@ app.get("/:urlParams", async (req, res) => {
   //   console.error(err);
   // });
 });
-
-// // catch 404 and forward to error handler
-// app.use(function (req, res, next) {
-//   next(createError(404));
-// });
-
-// // error handler
-// app.use(function (err, req, res, next) {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get("env") === "development" ? err : {};
-
-//   // render the error page
-//   res.status(err.status || 500);
-//   res.render("error");
-// });
 
 app.listen(PORT, () => {
   console.log(`Server is running. port ${PORT}`);
